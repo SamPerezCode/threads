@@ -5,7 +5,20 @@ import LocationIcon from "../../../../icons/LocationIcon";
 import { getAvatarUrl } from "../../../../../utils/getAvatarUrl";
 import { buildApiUrl } from "../../../../../config/apiConfig";
 
-const HiloItem = ({ index, hilo, avatar, actualizarHilo, eliminarUltimoHilo }) => {
+const getStoredUsername = () => {
+  try {
+    const raw = localStorage.getItem("usuario");
+    if (!raw) return "Usuario";
+    const stored = JSON.parse(raw);
+    return stored?.username || stored?.name || "Usuario";
+  } catch {
+    return "Usuario";
+  }
+};
+
+const HiloItem = ({ index, hilo, avatar, username, actualizarHilo, eliminarUltimoHilo }) => {
+  const displayUsername = username?.trim() ? username : getStoredUsername();
+
   const manejarImagen = async (file) => {
     const formData = new FormData();
     formData.append("avatar", file); // 👈 nombre esperado por el backend
@@ -63,7 +76,7 @@ const HiloItem = ({ index, hilo, avatar, actualizarHilo, eliminarUltimoHilo }) =
 
       <div className="contenido-hilo">
         <div className="cabecera-hilo">
-          <span className="usuario">sammmperezz</span>
+          <span className="usuario">{displayUsername}</span>
           {index > 0 && (
             <button className="btn-cerrar-x" onClick={eliminarUltimoHilo}>
               ×
