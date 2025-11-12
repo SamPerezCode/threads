@@ -6,6 +6,7 @@ import "../components/dashboard/Tabs/TabHilos/ModalHilo.css";
 import "../css/home.css";
 import { obtenerComentarios } from "../../src/api/publicaciones/obtenerComentarios";
 import { getAvatarUrl } from "../utils/getAvatarUrl";
+import { buildApiUrl } from "../config/apiConfig";
 
 const Home = () => {
   const [comentarios, setComentarios] = useState([]);
@@ -30,7 +31,7 @@ const Home = () => {
         const userId = localStorage.getItem("userId");
         const token = localStorage.getItem("token");
 
-        const res = await fetch(`https://dockerapps.pulzo.com/threads/api/usuarios/${userId}`, {
+        const res = await fetch(buildApiUrl(`/api/usuarios/${userId}`), {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,

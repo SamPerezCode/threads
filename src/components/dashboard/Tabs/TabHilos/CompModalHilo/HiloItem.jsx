@@ -3,23 +3,16 @@ import VerticalLine from "../../../../icons/VerticalLine";
 import ImageIcon from "../../../../icons/ImageIcon";
 import LocationIcon from "../../../../icons/LocationIcon";
 import { getAvatarUrl } from "../../../../../utils/getAvatarUrl";
+import { buildApiUrl } from "../../../../../config/apiConfig";
 
 const HiloItem = ({ index, hilo, avatar, actualizarHilo, eliminarUltimoHilo }) => {
-  // const manejarImagen = (file) => {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //         actualizarHilo(index, "imagen", reader.result); // ✅ base64
-  //     };
-  //     reader.readAsDataURL(file);
-  // };
-
   const manejarImagen = async (file) => {
     const formData = new FormData();
     formData.append("avatar", file); // 👈 nombre esperado por el backend
 
     try {
       const token = localStorage.getItem("token"); // Asegúrate de que guardas el token así
-      const response = await fetch("https://dockerapps.pulzo.com/threads/api/usuarios/avatar", {
+      const response = await fetch(buildApiUrl("/api/usuarios/avatar"), {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

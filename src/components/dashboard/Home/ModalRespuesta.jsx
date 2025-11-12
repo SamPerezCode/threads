@@ -6,6 +6,7 @@ import obtenerUsuario from "../../../api/usuarios/ObtenerInformacionUsuario";
 import { getAvatarUrl } from "../../../utils/getAvatarUrl";
 import VerticalLine from "../../icons/VerticalLine";
 import obtenerRespuestas from "../../../api/publicaciones/obtenerRespuestas";
+import { buildApiUrl } from "../../../config/apiConfig";
 
 const ModalRespuesta = ({ publicacion, onClose, respuestas: respuestasProp, onNuevaRespuesta }) => {
   const [usuarioLogueado, setUsuarioLogueado] = useState(null);
@@ -44,17 +45,14 @@ const ModalRespuesta = ({ publicacion, onClose, respuestas: respuestasProp, onNu
 
     try {
       console.log("🧾 Enviando payload:", payload);
-      const response = await fetch(
-        "https://dockerapps.pulzo.com/threads/api/comentarios/responder",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      const response = await fetch(buildApiUrl("/api/comentarios/responder"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
 
       const data = await response.json();
 
@@ -87,7 +85,7 @@ const ModalRespuesta = ({ publicacion, onClose, respuestas: respuestasProp, onNu
 
       try {
         const response = await fetch(
-          `https://dockerapps.pulzo.com/threads/api/comentarios/${publicacion.id}/conversacion`,
+          buildApiUrl(`/api/comentarios/${publicacion.id}/conversacion`),
           {
             method: "GET",
             headers: {
