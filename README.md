@@ -4,16 +4,24 @@ This project now incluye un modo **Mock** para ejecutar la aplicación sin depen
 
 ## Ejecutar la aplicación con la API simulada
 
-1. Creá un archivo `.env.local` en la raíz del proyecto (al mismo nivel que `package.json`).
-2. Añadí la variable:
+1. Iniciá la aplicación con `npm run dev` como siempre.
+2. El mock se activa automáticamente en cualquier entorno a menos que lo desactives de forma explícita. Si necesitás forzar un comportamiento específico, podés crear un archivo `.env.local` en la raíz del proyecto (al mismo nivel que `package.json`) y definir la variable:
 
    ```bash
-   VITE_USE_MOCK_API=true
+   VITE_USE_MOCK_API=true  # o false para llamar a la API real
    ```
 
-3. Iniciá la aplicación con `npm run dev` como siempre.
+Cuando el modo mock está activo, la aplicación intercepta las peticiones al backend configurado en `VITE_API_BASE_URL` (por defecto `https://dockerapps.pulzo.com/threads`) y las atiende con datos locales persistidos en `localStorage`. Esto permite iniciar sesión, registrar usuarios, gestionar el perfil y trabajar con publicaciones, likes y seguidores sin requerir MySQL ni servicios externos.
 
-Cuando esta variable esté definida en `true`, la aplicación intercepta las peticiones a `https://dockerapps.pulzo.com/threads/...` y las atiende con datos locales persistidos en `localStorage`. Esto permite iniciar sesión, registrar usuarios, gestionar el perfil y trabajar con publicaciones, likes y seguidores sin requerir MySQL ni servicios externos.
+### Configurar la URL base de la API real
+
+Si en algún momento disponés de un backend accesible (o querés apuntar a otro entorno), agregá esta variable al mismo archivo `.env.local`:
+
+```bash
+VITE_API_BASE_URL="https://tu-backend.com/threads"
+```
+
+También podés usar rutas relativas (por ejemplo `/threads`) para que Vercel u otra plataforma sirva el mock y evites problemas de CORS. El mock seguirá funcionando mientras `VITE_USE_MOCK_API` esté en `true`.
 
 ### Credenciales de ejemplo
 

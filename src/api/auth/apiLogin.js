@@ -34,7 +34,6 @@ async function requestMockLogin(credentials) {
   return data;
 }
 
-// 🔹 Manejo de parsing seguro
 async function parseResponse(response) {
   try {
     return await response.json();
@@ -44,7 +43,6 @@ async function parseResponse(response) {
   }
 }
 
-// 🔹 Construcción de errores
 function buildError(data) {
   if (data && typeof data === "object") {
     return new Error(data.error || data.message || DEFAULT_ERROR);
@@ -55,7 +53,6 @@ function buildError(data) {
   return new Error(DEFAULT_ERROR);
 }
 
-// 🔹 Función principal de login (decide mock o real)
 export async function loginUser(credentials) {
   if (USE_MOCK_API && typeof window !== "undefined") {
     try {

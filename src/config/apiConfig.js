@@ -1,35 +1,43 @@
-// src/config/apiConfig.js
+const DEFAULT_API_BASE_URL = "https://dockerapps.pulzo.com/threads";
+const rawApiBaseUrl = (import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE_URL).trim();
 
-// 1) Lee flags desde Vite
-const USE_MOCK_FLAG =
-  (import.meta.env.VITE_USE_MOCK_API ?? (import.meta.env.DEV ? "true" : "false")) === "true";
+export const API_BASE_URL = (() => {
+  if (/^https?:\/\//i.test(rawApiBaseUrl)) {
+    return rawApiBaseUrl.replace(/\/$/, "");
+  }
 
-const ENV_API_URL = import.meta.env.VITE_API_URL; // opcional
+  if (typeof window !== "undefined" && window.location) {
+    const url = new URL(rawApiBaseUrl, window.location.origin);
+    return url.toString().replace(/\/$/, "");
+  }
 
-// 2) Decide la base según el flag
-export const USE_MOCK_API = USE_MOCK_FLAG;
+  return rawApiBaseUrl.replace(/\/$/, "");
+})();
 
-// si es mock: pega a tus rutas mock (MSW/handlers). Ajusta "/api/mock" a tu prefijo real.
-// si NO es mock: usa VITE_API_URL o el fallback remoto.
-export const API_BASE_URL = USE_MOCK_API
-  ? "/api/mock"
-  : ENV_API_URL || "https://dockerapps.pulzo.com/threads";
+const mockEnvValue = import.meta.env.VITE_USE_MOCK_API;
+export const USE_MOCK_API = mockEnvValue == null ? true : mockEnvValue === "true";
 
-// 3) Helpers
 export const API_BASE_PATH = (() => {
   try {
-    const { pathname } = new URL(
-      API_BASE_URL.startsWith("http") ? API_BASE_URL : "http://x" + API_BASE_URL
-    );
+    const { pathname } = new URL(API_BASE_URL);
+    if (!pathname) {
+      return "/";
+    }
     return pathname.endsWith("/") && pathname !== "/" ? pathname.slice(0, -1) : pathname;
   } catch {
-    return "/";
+    return rawApiBaseUrl.startsWith("/") ? rawApiBaseUrl : "/";
   }
 })();
 
 export const buildApiUrl = (path = "") => {
-  if (!path) return API_BASE_URL;
-  if (/^https?:\/\//i.test(path)) return path;
+  if (!path) {
+    return API_BASE_URL;
+  }
+
+  if (/^https?:\/\//i.test(path)) {
+    return path;
+  }
+
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   return `${API_BASE_URL}${normalizedPath}`;
 };
