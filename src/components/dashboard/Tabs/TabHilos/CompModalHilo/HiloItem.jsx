@@ -21,15 +21,14 @@ const HiloItem = ({ index, hilo, avatar, username, actualizarHilo, eliminarUltim
 
   const manejarImagen = async (file) => {
     const formData = new FormData();
-    formData.append("avatar", file); // 👈 nombre esperado por el backend
+    formData.append("avatar", file);
 
     try {
-      const token = localStorage.getItem("token"); // Asegúrate de que guardas el token así
+      const token = localStorage.getItem("token");
       const response = await fetch(buildApiUrl("/api/usuarios/avatar"), {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          // ❌ No pongas Content-Type aquí, fetch lo hace automáticamente con FormData
         },
         body: formData,
       });
@@ -38,7 +37,7 @@ const HiloItem = ({ index, hilo, avatar, username, actualizarHilo, eliminarUltim
 
       if (response.ok) {
         console.log("✅ Avatar subido:", data);
-        // Aquí puedes actualizar el estado si necesitas mostrar el avatar actualizado
+
         const imagenActualizada = getAvatarUrl(data.path) || file.name;
         console.log(imagenActualizada);
         actualizarHilo(index, "imagen", imagenActualizada);
